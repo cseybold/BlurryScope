@@ -13,7 +13,7 @@ for video_file in video_files:
     # Load the video file
     cap1 = cv2.VideoCapture(video_file)
 
-    frame_number = 100
+    frame_number = 200
     cap1.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
 
     # Read the frame
@@ -32,8 +32,7 @@ for video_file in video_files:
 
     cap = cv2.VideoCapture(video_file)
 
-    imup = frame
-    mask = cv2.imread(imup)
+    mask = frame
 
     # Get video properties (frame width, height, etc.)
     frame_width = int(cap.get(3))
