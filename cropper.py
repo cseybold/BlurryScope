@@ -39,17 +39,23 @@ def wholeThang(image):
   # flip?
   flIm = None
   while flIm is None:
-    flipornot = int(input("Input 0 for original or 1 for flipped: "))
+    flipornot = int(input("Input 0 for original, 1 for hor flip, or 2 for vert flip: "))
     if flipornot == 0:
-      flIm = False
+      flIm = 0
       break
     elif flipornot == 1:
-      flIm = True
+      flIm = 1
+      break
+    elif flipornot == 2:
+      flIm == 2
       break
     else:
       print('Invalid input: please enter 0 or 1')
 
-  if flIm:
+  if flIm == 1:
+      image = cv2.flip(image, 1)
+      im_blur2 = cv2.flip(im_blur2, 1)
+  elif flIm == 2:
       image = cv2.flip(image, 0)
       im_blur2 = cv2.flip(im_blur2, 0)
 
