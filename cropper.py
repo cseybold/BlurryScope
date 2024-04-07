@@ -47,7 +47,7 @@ def wholeThang(image):
       flIm = 1
       break
     elif flipornot == 2:
-      flIm == 2
+      flIm = 2
       break
     else:
       print('Invalid input: please enter 0 or 1')
