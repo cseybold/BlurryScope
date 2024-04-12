@@ -7,7 +7,7 @@ from skimage.segmentation import clear_border
 import random
 
 
-spreadsheet = r"C:\Users\DL04\Documents\ganscanslidescoresheet.csv"
+spreadsheet = r"C:\Users\ammic\Downloads\ganscanslidescoresheet.csv"
 
 def wholeThang(image):
 
@@ -123,10 +123,10 @@ def wholeThang(image):
 
   # Draw the grid
   for i in range(sample_width, width-sample_width, sample_width):
-      cv2.line(rect_im, (i, 0), (i, height), color=(255, 0, 0), thickness=20)
+      cv2.line(rect_im, (i, 0), (i, height), color=(255, 0, 0), thickness=50)
       #cv2.line(rect_im_rot, (i, 0), (i, height), color=(255, 0, 0), thickness=1)
   for i in range(sample_height, height-sample_height, sample_height):
-      cv2.line(rect_im, (0, i), (width, i), color=(255, 0, 0), thickness=20)
+      cv2.line(rect_im, (0, i), (width, i), color=(255, 0, 0), thickness=50)
       #cv2.line(rect_im_rot, (0, i), (width, i), color=(255, 0, 0), thickness=1)
 
 
@@ -139,22 +139,16 @@ def wholeThang(image):
 
 
   #save crops
-  #uniqueSlideID = os.path.splitext(filename)[0].split('_r0')[0]
 
-  output_directory = f"grid_images_{uniqueSlideID}"
+  output_directory = f"labeledData_{uniqueSlideID}"
   sub_dirs = ['0', '1', '2', '3']
   for x in sub_dirs:
     if not os.path.exists(f"{output_directory}/{x}"):
       os.makedirs(f"{output_directory}/{x}")
 
-  output_directory_2 = f"noleak_images_{uniqueSlideID}"
-  sub_dirs = ['0', '1', '2', '3']
-  for x in sub_dirs:
-    if not os.path.exists(f"{output_directory_2}/{x}"):
-      os.makedirs(f"{output_directory_2}/{x}")
-
   cropSize = 512
-  final_cat_grid = np.zeros((grid_rows, real_cols, 5, cropSize, cropSize, 3))
+
+  image_array_list = [[] for i in range(4)]
 
   # Open the CSV file
   with open(spreadsheet, "r") as f:
@@ -224,28 +218,36 @@ def wholeThang(image):
           cat5.append(randcrop)
         cat5.append(cv2.resize(crop, (cropSize, cropSize), interpolation=cv2.INTER_CUBIC))
 
-        final_cat_grid[i, j] = cat5
-
         # Check the score and save the image in the corresponding directory
         if score == "0":
-          cv2.imwrite(os.path.join(f"{output_directory}/0", f"{uniqueSlideID}_{core_id}_{score}.png"), grid_image)
-          cv2.imwrite(os.path.join(f"{output_directory_2}/0", f"{uniqueSlideID}_{core_id}_{score}_noleak.png"), crop)
+          if not os.path.exists(f"{output_directory}/0/{core_id}"):
+            os.makedirs(f"{output_directory}/0/{core_id}")
+          for im in range(5):
+            cv2.imwrite(os.path.join(f"{output_directory}/0/{core_id}", f"{uniqueSlideID}_{core_id}_{score}_{im}.png"),
+                        cat5[im])
         elif score == "1":
-          cv2.imwrite(os.path.join(f"{output_directory}/1", f"{uniqueSlideID}_{core_id}_{score}.png"), grid_image)
-          cv2.imwrite(os.path.join(f"{output_directory_2}/1", f"{uniqueSlideID}_{core_id}_{score}_noleak.png"), crop)
+          if not os.path.exists(f"{output_directory}/1/{core_id}"):
+            os.makedirs(f"{output_directory}/1/{core_id}")
+          for im in range(5):
+            cv2.imwrite(os.path.join(f"{output_directory}/1/{core_id}", f"{uniqueSlideID}_{core_id}_{score}_{im}.png"),
+                        cat5[im])
         elif score == "2":
-          cv2.imwrite(os.path.join(f"{output_directory}/2", f"{uniqueSlideID}_{core_id}_{score}.png"), grid_image)
-          cv2.imwrite(os.path.join(f"{output_directory_2}/2", f"{uniqueSlideID}_{core_id}_{score}_noleak.png"), crop)
+          if not os.path.exists(f"{output_directory}/2/{core_id}"):
+            os.makedirs(f"{output_directory}/2/{core_id}")
+          for im in range(5):
+            cv2.imwrite(os.path.join(f"{output_directory}/2/{core_id}", f"{uniqueSlideID}_{core_id}_{score}_{im}.png"),
+                        cat5[im])
         elif score == "3":
-          cv2.imwrite(os.path.join(f"{output_directory}/3", f"{uniqueSlideID}_{core_id}_{score}.png"), grid_image)
-          cv2.imwrite(os.path.join(f"{output_directory_2}/3", f"{uniqueSlideID}_{core_id}_{score}_noleak.png"), crop)
+          if not os.path.exists(f"{output_directory}/3/{core_id}"):
+            os.makedirs(f"{output_directory}/3/{core_id}")
+          for im in range(5):
+            cv2.imwrite(os.path.join(f"{output_directory}/3/{core_id}", f"{uniqueSlideID}_{core_id}_{score}_{im}.png"),
+                        cat5[im])
         else:
           continue
 
-  np.save(uniqueSlideID, final_cat_grid)
 
-
-image_dir = r"C:\Users\DL04\PycharmProjects\pythonProject\output_images_BR1202a_1_white"
+image_dir = r"F:\BR_slide_TIFs\pythonProject\output_images_BR2082c_2_white"
 innermost_folder_name = os.path.basename(image_dir)
 
 image_files = sorted(os.listdir(image_dir))
