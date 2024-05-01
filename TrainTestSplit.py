@@ -16,15 +16,17 @@ def create_train_test_split(data_dir, output_dir, test_size=0.2, random_seed=200
     os.makedirs(train_dir, exist_ok=True)
     os.makedirs(test_dir, exist_ok=True)
 
-    # Collect samples by name/info
+    # Collect samples by sample name
     image_list = [[],[],[],[]]
-    num_images = 0
     for root, _, files in os.walk(data_dir):
         for filename in files:
             if filename.lower().endswith(('.png')):
-                num_images += 1
-                diff = filename.rsplit('_', 1)[0]
+                # diff = filename.rsplit('_', 1)[0]
+                slide = filename.split('_')[0]
+                core = filename.split('_')[2]
+                diff = f"{slide}_{core}"
                 score = int(filename.rsplit('_', 3)[2])
+                # print(f'{filename}__{diff}__{score}')
                 if score == 0:
                     if diff not in image_list[0]:
                         image_list[0].append(diff)
@@ -47,12 +49,16 @@ def create_train_test_split(data_dir, output_dir, test_size=0.2, random_seed=200
         test_samples[i] = image_list[i][:num_test_samples]
         train_samples[i] = image_list[i][num_test_samples:]
 
-
     for root, _, files in os.walk(data_dir):
         for filename in files:
-            if filename.lower().endswith(('.png')):
-                diff = filename.rsplit('_', 1)[0]
-                score = filename.rsplit('_', 3)[2]
+            if filename.lower().endswith(('.tif')):
+                # diff, _ = os.path.splitext(filename)
+                slide = filename.split('_')[0]
+                core = filename.split('_')[2]
+                diff = f"{slide}_{core}"
+                score = filename.rsplit('_', 1)[1].split('.')[0]
+                # score = filename.split('_')[3]
+                # print(f'{filename}__{diff}__{score}')
                 if int(score) == 0:
                     if diff in train_samples[0]:
                         shutil.copy(os.path.join(root, filename), os.path.join(train_dir, score))
@@ -75,8 +81,8 @@ def create_train_test_split(data_dir, output_dir, test_size=0.2, random_seed=200
                         shutil.copy(os.path.join(root, filename), os.path.join(test_dir, score))
 
 
-main_data_dir = r"C:\Users\ammic\Documents\preData"
-output_data_dir = "BlurScoreDataGood"
+main_data_dir = r"C:\Users\ammic\Documents\preDataTIF"
+output_data_dir = "BlurScoreDataTIF"
 
 create_train_test_split(main_data_dir, output_data_dir)
 print("Data split completed successfully!")
