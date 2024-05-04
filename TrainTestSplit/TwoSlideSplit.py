@@ -13,8 +13,6 @@ def create_train_test_split(data_dir, output_dir, test_size=0.2, random_seed=200
             os.makedirs(f"{train_dir}/{x}")
         if not os.path.exists(f"{test_dir}/{x}"):
             os.makedirs(f"{test_dir}/{x}")
-    os.makedirs(train_dir, exist_ok=True)
-    os.makedirs(test_dir, exist_ok=True)
 
     for root, _, files in os.walk(data_dir):
         for filename in files:
